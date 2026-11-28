@@ -8,7 +8,7 @@ export const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-lg bg-navy-800 text-white ring-1 ring-white/10 flex items-center justify-center font-bold">
               <Activity className="w-4 h-4" />
             </div>
             <div>

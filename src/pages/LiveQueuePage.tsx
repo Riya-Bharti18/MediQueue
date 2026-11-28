@@ -1,23 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQueue } from '../context/QueueContext';
 import { LiveQueueRing } from '../components/LiveQueueRing';
 import { DigitalTokenCard } from '../components/DigitalTokenCard';
 import { 
   Activity, 
-  Clock, 
   Users, 
-  Bell, 
-  Share2, 
   RefreshCw, 
   Volume2, 
-  CheckCircle2, 
   MapPin, 
-  ArrowRight,
-  ShieldCheck,
   AlertCircle,
-  FastForward,
-  Pause,
-  Play
+  FastForward
 } from 'lucide-react';
 
 export const LiveQueuePage: React.FC = () => {
@@ -26,25 +18,25 @@ export const LiveQueuePage: React.FC = () => {
     queueEntries, 
     queueState, 
     activeToken, 
-    userActiveEntry,
+    userBookedToken,
     logs,
     simulateNextStep,
     simulateReconnect,
     isReconnecting,
     playChime,
-    togglePauseQueue,
     navigateTo
   } = useQueue();
 
-  const [activeTab, setActiveTab] = useState<'tracker' | 'ticket' | 'timeline'>('tracker');
-
   // Filter entries for this doctor
   const doctorEntries = queueEntries.filter(e => e.doctorId === selectedDoctor.id);
-  const activeEntries = doctorEntries.filter(e => e.status !== 'COMPLETED' && e.status !== 'SKIPPED');
+  const activeEntries = doctorEntries.filter(
+    e => e.status !== 'COMPLETED' && e.status !== 'SKIPPED' && e.status !== 'IN_PROGRESS' && e.status !== 'CANCELLED'
+  );
   
   // Find current serving and user entry
   const currentConsulting = doctorEntries.find(e => e.status === 'IN_PROGRESS' || e.status === 'CALLED');
-  const userEntry = userActiveEntry || doctorEntries.find(e => e.token === activeToken) || doctorEntries[1] || doctorEntries[0];
+  const nextPatient = activeEntries.find(e => e.status === 'WAITING');
+  const userEntry = doctorEntries.find(e => e.token === activeToken) || null;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
@@ -149,10 +141,10 @@ export const LiveQueuePage: React.FC = () => {
                 </span>
                 <div className="flex items-baseline justify-between mt-1">
                   <span className="text-2xl font-black font-mono text-white">
-                    {currentConsulting ? currentConsulting.token : 'Room Available'}
+                    {currentConsulting ? currentConsulting.token : 'No token called yet'}
                   </span>
                   <span className="text-xs text-slate-400 font-medium">
-                    {currentConsulting ? currentConsulting.patientName : 'Ready'}
+                    {currentConsulting ? currentConsulting.patientName : 'Awaiting first call'}
                   </span>
                 </div>
               </div>
@@ -163,10 +155,10 @@ export const LiveQueuePage: React.FC = () => {
                 </span>
                 <div className="flex items-baseline justify-between mt-1">
                   <span className="text-2xl font-black font-mono text-amber-300">
-                    {doctorEntries.find(e => e.status === 'CALLED')?.token || 'A-022'}
+                    {nextPatient ? nextPatient.token : 'Awaiting first call'}
                   </span>
                   <span className="text-xs text-slate-400 font-medium">
-                    {doctorEntries.find(e => e.status === 'CALLED')?.patientName || 'Waiting in corridor'}
+                    {nextPatient ? nextPatient.patientName : 'No patient waiting'}
                   </span>
                 </div>
               </div>
@@ -234,7 +226,7 @@ export const LiveQueuePage: React.FC = () => {
 
             <div className="space-y-2.5">
               {activeEntries.map((entry, index) => {
-                const isUser = entry.token === activeToken;
+                const isUser = userBookedToken !== null && entry.token === userBookedToken;
                 return (
                   <div
                     key={entry.id}
@@ -248,7 +240,7 @@ export const LiveQueuePage: React.FC = () => {
                       <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-mono ${
                         isUser ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-700'
                       }`}>
-                        #{index + 1}
+                        #{entry.position || index + 1}
                       </span>
                       <div>
                         <div className="flex items-center gap-1.5">

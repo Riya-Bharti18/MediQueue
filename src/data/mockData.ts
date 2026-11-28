@@ -160,7 +160,7 @@ export const INITIAL_QUEUE_ENTRIES: QueueEntry[] = [
   {
     id: 'q-4',
     token: 'A-024',
-    patientName: 'Subhasish Sen (You)',
+    patientName: 'Subhasish Sen',
     patientPhone: '+91 98310 55667',
     patientAge: 46,
     patientGender: 'Male',

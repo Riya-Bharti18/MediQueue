@@ -3,6 +3,8 @@ import { Doctor, Slot, QueueEntry, QueueEventLog, Role, QueueState } from '../ty
 import { INITIAL_DOCTORS, INITIAL_SLOTS, INITIAL_QUEUE_ENTRIES } from '../data/mockData';
 
 export type PageId = 
+  | 'home'
+  | 'sign-in'
   | 'doctors' 
   | 'booking' 
   | 'live-queue' 
@@ -55,6 +57,7 @@ interface QueueContextType {
   
   // User active booking
   activeToken: string | null;
+  userBookedToken: string | null;
   userTokens: QueueEntry[];
   userActiveEntry: QueueEntry | null;
   
@@ -109,7 +112,7 @@ const STORAGE_KEY = 'mediqueue_state_v1';
 
 export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [role, setRoleState] = useState<Role>('PATIENT');
-  const [activePage, setActivePage] = useState<PageId>('doctors');
+  const [activePage, setActivePage] = useState<PageId>('home');
   const [navigationMeta, setNavigationMeta] = useState<any>(null);
 
   const [doctors, setDoctors] = useState<Doctor[]>(INITIAL_DOCTORS);
@@ -118,6 +121,7 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [queueEntries, setQueueEntries] = useState<QueueEntry[]>(INITIAL_QUEUE_ENTRIES);
   const [queueState, setQueueState] = useState<QueueState>('ACTIVE');
   const [activeToken, setActiveToken] = useState<string | null>('A-024'); // default user token for instant live preview
+  const [userBookedToken, setUserBookedToken] = useState<string | null>(null);
   const [isReconnecting, setIsReconnecting] = useState<boolean>(false);
   
   const [toasts, setToasts] = useState<ToastMessage[]>([
@@ -222,10 +226,18 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const doctor = doctors.find(d => d.id === payload.doctorId) || selectedDoctor;
     const slot = slots.find(s => s.id === payload.slotId);
 
-    // Generate next token e.g. A-026
-    const existingTokens = queueEntries.filter(e => e.entryType === 'BOOKED');
-    const nextNum = 20 + existingTokens.length + 1;
-    const token = `A-0${nextNum}`;
+    // Generate a unique sequential token e.g. A-026
+    const usedTokens = new Set(queueEntries.map(e => e.token));
+    const highestToken = Math.max(
+      20,
+      ...queueEntries.map(e => Number(e.token.replace(/^A-/, ''))).filter(n => Number.isFinite(n))
+    );
+    let nextNum = highestToken + 1;
+    let token = `A-${String(nextNum).padStart(3, '0')}`;
+    while (usedTokens.has(token)) {
+      nextNum += 1;
+      token = `A-${String(nextNum).padStart(3, '0')}`;
+    }
 
     const newEntry: QueueEntry = {
       id: `q-${Date.now()}`,
@@ -270,6 +282,7 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const updatedQueue = recalculateQueue([...queueEntries, newEntry], doctors);
     setQueueEntries(updatedQueue);
     setActiveToken(token);
+    setUserBookedToken(token);
 
     const log: QueueEventLog = {
       id: `log-${Date.now()}`,
@@ -538,6 +551,7 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         logs,
         queueState,
         activeToken,
+        userBookedToken,
         userTokens,
         userActiveEntry,
         bookSlot,

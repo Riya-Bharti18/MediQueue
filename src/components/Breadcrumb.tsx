@@ -17,7 +17,7 @@ export const Breadcrumb: React.FC = () => {
     { id: 'live-queue', label: '3. Live Queue & Turn', stepNumber: 3 },
   ];
 
-  if (activePage === 'doctor-dashboard' || activePage === 'receptionist' || activePage === 'waiting-room-tv' || activePage === 'my-tokens') {
+  if (activePage === 'home' || activePage === 'sign-in' || activePage === 'doctor-dashboard' || activePage === 'receptionist' || activePage === 'waiting-room-tv' || activePage === 'my-tokens') {
     return null;
   }
 

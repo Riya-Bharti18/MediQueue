@@ -3,10 +3,11 @@ import { QueueProvider, useQueue } from './context/QueueContext';
 import { Navbar } from './components/Navbar';
 import { Breadcrumb } from './components/Breadcrumb';
 import { ToastContainer } from './components/Toast';
-import { PersonaSwitcher } from './components/PersonaSwitcher';
 import { Footer } from './components/Footer';
 
 // Pages
+import { LandingPage } from './pages/LandingPage';
+import { SignInPage } from './pages/SignInPage';
 import { DoctorSearchPage } from './pages/DoctorSearchPage';
 import { BookingFlowPage } from './pages/BookingFlowPage';
 import { LiveQueuePage } from './pages/LiveQueuePage';
@@ -50,6 +51,10 @@ const MainContent: React.FC = () => {
 
   const renderCurrentPage = () => {
     switch (activePage) {
+      case 'home':
+        return <LandingPage />;
+      case 'sign-in':
+        return <SignInPage />;
       case 'doctors':
         return <DoctorSearchPage />;
       case 'booking':
@@ -63,7 +68,7 @@ const MainContent: React.FC = () => {
       case 'my-tokens':
         return <MyTokensPage />;
       default:
-        return <DoctorSearchPage />;
+        return <LandingPage />;
     }
   };
 
@@ -72,9 +77,6 @@ const MainContent: React.FC = () => {
       <Navbar />
       <Breadcrumb />
       
-      {/* Floating interactive demo controls */}
-      <PersonaSwitcher />
-
       {/* Main Animated Page View Container */}
       <main className="flex-1">
         <AnimatePresence mode="wait">

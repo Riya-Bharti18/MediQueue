@@ -19,9 +19,7 @@ import { DigitalTokenCard } from '../components/DigitalTokenCard';
 
 export const BookingFlowPage: React.FC = () => {
   const { 
-    doctors, 
     selectedDoctor, 
-    setSelectedDoctorId, 
     slots, 
     bookSlot, 
     navigateTo, 
@@ -31,7 +29,18 @@ export const BookingFlowPage: React.FC = () => {
   } = useQueue();
 
   const [step, setStep] = useState<number>(1);
-  const [selectedSlotId, setSelectedSlotId] = useState<string>('slot-3');
+  const [selectedSlotId, setSelectedSlotId] = useState<string>(
+    () => slots.find(s => s.doctorId === selectedDoctor.id && s.status !== 'FULL')?.id ?? ''
+  );
+
+  React.useEffect(() => {
+    const isStillAvailable = slots.some(
+      s => s.id === selectedSlotId && s.doctorId === selectedDoctor.id && s.status !== 'FULL'
+    );
+    if (!isStillAvailable) {
+      setSelectedSlotId(slots.find(s => s.doctorId === selectedDoctor.id && s.status !== 'FULL')?.id ?? '');
+    }
+  }, [selectedSlotId, selectedDoctor.id, slots]);
   
   // Patient form
   const [patientName, setPatientName] = useState<string>('Subhasish Sen');
@@ -158,40 +167,8 @@ export const BookingFlowPage: React.FC = () => {
           {step === 1 && (
             <div className="space-y-6">
               
-              {/* Doctor Picker Row */}
-              <div>
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-3">
-                  Select Specialist
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {doctors.map((doc) => (
-                    <button
-                      key={doc.id}
-                      type="button"
-                      onClick={() => setSelectedDoctorId(doc.id)}
-                      className={`p-3.5 rounded-2xl border text-left transition-all flex items-center gap-3 ${
-                        selectedDoctor.id === doc.id
-                          ? 'border-emerald-600 bg-emerald-50/80 ring-2 ring-emerald-500/30'
-                          : 'border-slate-200 hover:border-slate-300 bg-white'
-                      }`}
-                    >
-                      <img
-                        src={doc.avatar}
-                        alt={doc.name}
-                        className="w-12 h-12 rounded-xl object-cover shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-sm text-slate-900 truncate">{doc.name}</h4>
-                        <p className="text-xs text-emerald-700 font-medium">{doc.specialization}</p>
-                        <p className="text-[11px] text-slate-500 mt-0.5">{doc.roomNumber}</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Slot Availability Grid */}
-              <div className="pt-4 border-t border-slate-100">
+              <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
                     Available Consultation Slots (Today)

@@ -4,13 +4,9 @@ import {
   Search, 
   MapPin, 
   Star, 
-  Clock, 
   Calendar, 
   ChevronRight, 
   Activity, 
-  Users, 
-  ShieldCheck,
-  Sparkles,
   Stethoscope
 } from 'lucide-react';
 import { Doctor } from '../types/queue';
@@ -46,51 +42,10 @@ export const DoctorSearchPage: React.FC = () => {
   return (
     <div className="min-h-screen pb-16">
       
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-emerald-900 via-slate-900 to-slate-950 text-white pt-12 pb-20 px-4 sm:px-6 lg:px-8">
-        
-        {/* Glow ambient background elements */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-10 w-80 h-80 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
-
+      {/* Search Section */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-emerald-900 via-slate-900 to-slate-950 text-white pt-8 pb-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto relative z-10">
-          
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/15 text-emerald-300 text-xs font-semibold border border-emerald-500/30 mb-4 backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Real-Time Consultation & Queue Visibility Layer</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-              Know your slot. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">
-                Know your queue. Know your time.
-              </span>
-            </h1>
-
-            <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
-              Book guaranteed appointment slots, receive instant digital tokens, track live consultation progress, and arrive right when your turn is called.
-            </p>
-
-            {/* Quick Metrics */}
-            <div className="mt-8 grid grid-cols-3 gap-3 sm:gap-6 border-t border-slate-800/80 pt-6">
-              <div>
-                <span className="block text-2xl sm:text-3xl font-black text-white font-mono">&lt; 100ms</span>
-                <span className="text-xs text-slate-400 font-medium">Live Queue Sync</span>
-              </div>
-              <div>
-                <span className="block text-2xl sm:text-3xl font-black text-emerald-400 font-mono">100%</span>
-                <span className="text-xs text-slate-400 font-medium">Digital Token Clarity</span>
-              </div>
-              <div>
-                <span className="block text-2xl sm:text-3xl font-black text-teal-300 font-mono">Dynamic</span>
-                <span className="text-xs text-slate-400 font-medium">Wait Time ETA</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Search Card */}
-          <div className="mt-10 bg-white/10 backdrop-blur-xl p-3 sm:p-4 rounded-2xl border border-white/10 shadow-2xl">
+          <div className="bg-white/10 backdrop-blur-xl p-3 sm:p-4 rounded-2xl border border-white/10 shadow-2xl">
             <div className="flex flex-col sm:flex-row items-center gap-3">
               <div className="relative flex-1 w-full">
                 <Search className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -126,7 +81,7 @@ export const DoctorSearchPage: React.FC = () => {
       </section>
 
       {/* Doctor Listings Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
